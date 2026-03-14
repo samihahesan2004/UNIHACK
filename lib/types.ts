@@ -1,25 +1,46 @@
-export type AppView =
-  | "auth"
-  | "profile-setup"
-  | "home"
-  | "events"
-  | "matches"
-  | "groups"
-  | "profile";
-
+export type AppView = "home" | "events" | "matches" | "groups" | "profile";
 export type AuthMode = "login" | "signup";
 
-export type EventItem = {
+// ---- DB types ----
+export interface DBProfile {
   id: string;
-  society: string;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  description: string;
-  signedUp: boolean;
-};
+  username: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  age: number | null;
+  pronouns: string | null;
+  bio: string | null;
+  degree: string | null;
+  year_of_study: string | null;
+  avatar_url: string | null;
+  interests: string[];
+  weekend_style: string[];
+  music_taste: string[];
+  trying_to_meet: string[];
+  preferred_event_vibe: string | null;
+  conversation_style: string | null;
+  ideal_hangout: string | null;
+  fun_fact: string | null;
+  social_energy: number;
+}
 
+export interface Event {
+  id: string;
+  title: string;
+  description: string | null;
+  society: string | null;
+  date: string | null;
+  location: string | null;
+  max_group_size: number;
+}
+
+export interface MatchGroup {
+  id: string;
+  event_id: string;
+  members: DBProfile[];
+}
+
+// ---- Legacy form types (kept for UI compatibility) ----
 export type ProfileFormData = {
   username: string;
   password: string;
@@ -44,22 +65,9 @@ export type ProfileFormData = {
 };
 
 export const chipOptions = [
-  "Sport",
-  "Gym",
-  "Music",
-  "Gaming",
-  "Movies",
-  "Reading",
-  "Coding",
-  "Content creation",
-  "Coffee runs",
-  "Hiking",
-  "Food",
-  "Anime",
-  "Travelling",
-  "Photography",
-  "Fashion",
-  "Art",
+  "Sport", "Gym", "Music", "Gaming", "Movies", "Reading", "Coding",
+  "Content creation", "Coffee runs", "Hiking", "Food", "Anime",
+  "Travelling", "Photography", "Fashion", "Art",
 ];
 
 export const initialProfileData: ProfileFormData = {
