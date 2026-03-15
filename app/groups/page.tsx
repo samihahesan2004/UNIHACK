@@ -8,6 +8,7 @@ import BottomNav from "@/components/BottomNav";
 import TopBar from "@/components/TopBar";
 import { useRouter } from "next/navigation";
 import { initialProfileData, ProfileFormData } from "@/lib/types";
+import Link from "next/link";
 
 interface Message {
   id: string;
@@ -149,7 +150,7 @@ export default function GroupsPage() {
   const openGroup = groups.find((g) => g.groupId === openGroupId);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 px-4 py-6 pb-28 md:px-6 md:py-8">
+    <main className="min-h-screen bg-gradient-to-br from-[#f7e8fb] via-[#f8efff] to-[#edf4ff] px-4 py-6 pb-28 md:px-6 md:py-8">
       <div className="mx-auto max-w-5xl space-y-6">
         <TopBar
           profile={profile}
@@ -157,65 +158,100 @@ export default function GroupsPage() {
           onLogout={async () => { await supabase.auth.signOut(); router.push("/"); }}
         />
 
-        <section className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+        <section className="rounded-[32px] border border-white/70 bg-white/65 p-6 shadow-[0_12px_40px_rgba(91,33,182,0.08)] backdrop-blur-sm md:p-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-fuchsia-100 bg-white px-3 py-1 text-xs font-semibold text-fuchsia-600">
             <Users className="h-3 w-3" /> Groups
           </div>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">Your groups</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">View the event groups you have been placed into and chat with your group.</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#111827]">Your groups</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            View the event groups you have been placed into and chat with your group.
+          </p>
         </section>
 
         {loading ? (
-          <div className="text-center py-16 text-slate-400 text-sm">Loading...</div>
+          <div className="py-16 text-center text-sm text-slate-500">Loading...</div>
         ) : groups.length === 0 ? (
-          <div className="text-center py-16 space-y-3">
-            <Users className="h-10 w-10 mx-auto text-slate-200" />
-            <p className="text-slate-400 text-sm">No groups yet.</p>
-            <button type="button" onClick={() => router.push("/events")}
-              className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+          <div className="space-y-3 rounded-[32px] border border-white/70 bg-white/65 py-16 text-center shadow-[0_12px_40px_rgba(91,33,182,0.08)] backdrop-blur-sm">
+            <Users className="mx-auto h-10 w-10 text-fuchsia-200" />
+            <p className="text-sm text-slate-500">No groups yet.</p>
+            <button
+              type="button"
+              onClick={() => router.push("/events")}
+              className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_25px_rgba(217,70,239,0.25)] transition hover:opacity-90"
+            >
               Browse events
             </button>
           </div>
         ) : (
           groups.map(({ groupId, event, members }) => (
-            <div key={groupId} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+            <div
+              key={groupId}
+              className="space-y-4 rounded-[32px] border border-white/70 bg-white/75 p-6 shadow-[0_12px_40px_rgba(91,33,182,0.08)] backdrop-blur-sm"
+            >
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{event.society} · {event.title}</p>
-                <h3 className="mt-1 text-lg font-semibold text-slate-900 flex items-center gap-2">
-                  <Users className="h-4 w-4" /> Your group · {members.length} people
+                <p className="text-xs font-semibold uppercase tracking-wide text-fuchsia-500">
+                  {event.society} · {event.title}
+                </p>
+                <h3 className="mt-1 flex items-center gap-2 text-lg font-semibold text-[#111827]">
+                  <Users className="h-4 w-4 text-fuchsia-500" /> Your group · {members.length} people
                 </h3>
               </div>
 
-              {/* Members list */}
               <div className="space-y-3">
                 {members.map((member) => (
-                  <div key={member.id} className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 shrink-0">
+                  <Link
+                    key={member.id}
+                    href={`/profile/${member.id}`}
+                    className="flex items-center gap-3 rounded-2xl border border-[#f1e7fb] bg-white/80 p-3 transition hover:bg-[#fcf8ff]"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f6ebff] text-fuchsia-600">
                       <User className="h-5 w-5" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-[#111827]">
                         {member.first_name} {member.last_name}
-                        {member.id === userId && <span className="ml-2 text-xs font-normal text-slate-400">(you)</span>}
+                        {member.id === userId && (
+                          <span className="ml-2 text-xs font-normal text-slate-400">(you)</span>
+                        )}
                       </p>
+
                       {(member.degree || member.year_of_study) && (
-                        <p className="text-xs text-slate-500 truncate">{member.degree}{member.year_of_study ? ` · Year ${member.year_of_study}` : ""}</p>
+                        <p className="truncate text-xs text-slate-500">
+                          {member.degree}
+                          {member.year_of_study ? ` · Year ${member.year_of_study}` : ""}
+                        </p>
                       )}
+
                       {member.interests.length > 0 && (
                         <div className="mt-1 flex flex-wrap gap-1">
-                          {member.interests.slice(0, 3).map((i) => (
-                            <span key={i} className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{i}</span>
-                          ))}
+                          {member.interests.slice(0, 3).map((i, index) => {
+                            const chipStyles = [
+                              "bg-[#f6e8ff] text-fuchsia-600",
+                              "bg-[#e8f7ee] text-emerald-600",
+                              "bg-[#eaf1ff] text-blue-600",
+                            ];
+                            return (
+                              <span
+                                key={i}
+                                className={`rounded-full px-2 py-0.5 text-xs ${chipStyles[index % chipStyles.length]}`}
+                              >
+                                {i}
+                              </span>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
 
-              {/* Chat button */}
-              <button type="button" onClick={() => { setOpenGroupId(groupId); setMessages([]); }}
-                className="w-full rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 flex items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => { setOpenGroupId(groupId); setMessages([]); }}
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+              >
                 <MessageCircle className="h-4 w-4" /> Open group chat
               </button>
             </div>
@@ -223,27 +259,36 @@ export default function GroupsPage() {
         )}
       </div>
 
-      {/* Chat modal */}
       {openGroupId && openGroup && (
         <div className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center">
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setOpenGroupId(null)} />
-          <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white shadow-2xl flex flex-col" style={{ height: "70vh" }}>
-            {/* Chat header */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-100">
+          <div
+            className="absolute inset-0 bg-black/25 backdrop-blur-sm"
+            onClick={() => setOpenGroupId(null)}
+          />
+          <div
+            className="relative flex h-[70vh] w-full max-w-lg flex-col rounded-[32px] border border-white/70 bg-[linear-gradient(to_bottom,#ffffff,#fbf7ff)] shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b border-[#f1e7fb] p-4">
               <div>
-                <p className="text-xs text-slate-400 uppercase tracking-wide">{openGroup.event.society} · {openGroup.event.title}</p>
-                <h3 className="font-semibold text-slate-900 text-sm">Group chat · {openGroup.members.length} people</h3>
+                <p className="text-xs uppercase tracking-wide text-fuchsia-500">
+                  {openGroup.event.society} · {openGroup.event.title}
+                </p>
+                <h3 className="text-sm font-semibold text-[#111827]">
+                  Group chat · {openGroup.members.length} people
+                </h3>
               </div>
-              <button type="button" onClick={() => setOpenGroupId(null)}
-                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 transition">
+              <button
+                type="button"
+                onClick={() => setOpenGroupId(null)}
+                className="rounded-full p-2 text-slate-400 transition hover:bg-[#f8f1ff]"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.length === 0 ? (
-                <div className="text-center py-8 text-slate-400 text-sm">
+                <div className="py-8 text-center text-sm text-slate-400">
                   No messages yet. Say hi! 👋
                 </div>
               ) : (
@@ -251,16 +296,22 @@ export default function GroupsPage() {
                   const isMe = msg.user_id === userId;
                   return (
                     <div key={msg.id} className={`flex gap-2 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-600 shrink-0 mt-1">
+                      <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f6ebff] text-fuchsia-600">
                         <User className="h-3.5 w-3.5" />
                       </div>
-                      <div className={`max-w-[70%] ${isMe ? "items-end" : "items-start"} flex flex-col gap-1`}>
+                      <div className={`flex max-w-[70%] flex-col gap-1 ${isMe ? "items-end" : "items-start"}`}>
                         {!isMe && (
-                          <p className="text-xs text-slate-400 px-1">
+                          <p className="px-1 text-xs text-slate-400">
                             {msg.sender?.first_name ?? "Unknown"}
                           </p>
                         )}
-                        <div className={`rounded-2xl px-3 py-2 text-sm ${isMe ? "bg-slate-900 text-white rounded-tr-sm" : "bg-slate-100 text-slate-900 rounded-tl-sm"}`}>
+                        <div
+                          className={`rounded-2xl px-3 py-2 text-sm ${
+                            isMe
+                              ? "rounded-tr-sm bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white"
+                              : "rounded-tl-sm border border-[#f1e7fb] bg-white text-[#111827]"
+                          }`}
+                        >
                           {msg.content}
                         </div>
                       </div>
@@ -271,17 +322,20 @@ export default function GroupsPage() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
-            <div className="p-4 border-t border-slate-100 flex gap-2">
+            <div className="flex gap-2 border-t border-[#f1e7fb] p-4">
               <input
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                 placeholder="Type a message..."
-                className="flex-1 rounded-full border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-slate-400"
+                className="flex-1 rounded-full border border-[#eadcf8] bg-white px-4 py-2.5 text-sm text-[#111827] outline-none placeholder:text-slate-400 focus:border-fuchsia-300"
               />
-              <button type="button" onClick={sendMessage} disabled={!newMessage.trim() || sending}
-                className="rounded-full bg-slate-900 p-2.5 text-white transition hover:opacity-90 disabled:opacity-50">
+              <button
+                type="button"
+                onClick={sendMessage}
+                disabled={!newMessage.trim() || sending}
+                className="rounded-full bg-[#0f172a] p-2.5 text-white transition hover:opacity-90 disabled:opacity-50"
+              >
                 <Send className="h-4 w-4" />
               </button>
             </div>

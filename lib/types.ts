@@ -9,6 +9,7 @@ export interface DBProfile {
   last_name: string | null;
   age: number | null;
   pronouns: string | null;
+  mbti: string | null;
   bio: string | null;
   degree: string | null;
   year_of_study: string | null;
@@ -52,6 +53,7 @@ export type ProfileFormData = {
   degree: string;
   yearOfStudy: string;
   pronouns: string;
+  mbti: string;
   bio: string;
   interests: string[];
   preferredEventVibe: string;
@@ -91,4 +93,5 @@ export const initialProfileData: ProfileFormData = {
   idealHangout: "",
   tryingToMeet: [],
   funFact: "",
+  mbti: "",
 };

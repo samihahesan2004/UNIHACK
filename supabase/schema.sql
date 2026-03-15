@@ -9,6 +9,7 @@ create table if not exists profiles (
   last_name text,
   age int,
   pronouns text,
+  mbti text,
   bio text,
   degree text,
   year_of_study text,
